@@ -51,6 +51,24 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 })
 
+app.get('/login', (req, res) => {
+    res.render('login')
+})
+
+app.post('/login',async (req, res) => {
+   let user = await User.findOne({email: req.body.email})
+   if(!user) res.send("Wrong Email")
+
+    const passwordMatch = bcrypt.compare(req.body.password, user.password);
+
+    if (passwordMatch) {
+        res.send('You are logged in');
+    } else {
+        res.send('Wrong password');
+    }
+})
+
+
 app.listen(3000, () => {
     console.log('Server is running on http://localhost:3000');
 });
