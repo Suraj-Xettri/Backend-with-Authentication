@@ -40,9 +40,7 @@ app.post('/register',  (req, res) => {
             res.cookie("token", token)
             res.redirect('/');
             console.log(token)
-        })
-        
-        
+        }) 
     })
 });
 
@@ -62,13 +60,11 @@ app.post('/login',async (req, res) => {
     const passwordMatch = bcrypt.compare(req.body.password, user.password);
 
     if (passwordMatch) {
-        res.render('profile');
+        res.render('profile', {user: user});
     } else {
         res.send('Wrong password');
     }
 })
 
 
-app.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000');
-});
+app.listen(3000);
