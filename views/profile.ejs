@@ -10,22 +10,26 @@
 
   <body class="bg-gray-100 h-screen flex items-center justify-center">
     <div class="max-w-md w-full bg-white p-8 rounded shadow-lg">
-      <div class="flex items-center justify-center">
-        <img
-          src="profile-pic.jpg"
-          alt="Profile Picture"
-          class="w-20 h-20 object-cover rounded-full shadow-md"
-        />
+      <div class="flex flex-col items-center justify-center">
+        <h2 class="text-2xl font-semibold text-gray-800 mt-4">Suraj</h2>
+        <p class="text-sm text-gray-600 mt-2">suraj@example.com</p>
+        <div class="pt-5 flex justify-between gap-5">
+          <button class="bg-blue-500 px-3 py-2  hover:bg-blue-600 text-white rounded-md">
+            <a
+            href="#"
+            class=""
+            >Edit Profile</a
+          >
+          </button>
+          <form class="" action="./logout" method="post">
+            <button class="px-3 py-2 bg-red-500 ">Log Out</button>
+            </form>
+        </div>
+        
+        
+
       </div>
-      <h2 class="text-2xl font-semibold text-gray-800 mt-4">Suraj</h2>
-      <p class="text-sm text-gray-600 mt-2">suraj@example.com</p>
-      <div class="mt-6">
-        <a
-          href="#"
-          class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md focus:outline-none"
-          >Edit Profile</a
-        >
-      </div>
+      
     </div>
   </body>
 </html>

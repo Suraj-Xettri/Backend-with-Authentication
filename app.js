@@ -46,9 +46,9 @@ app.post('/register',  (req, res) => {
     })
 });
 
-app.get('/logout', (req, res) => {
+app.post('/logout', (req, res) => {
     res.cookie("token","")
-    res.redirect('/');
+    res.redirect('/login');
 })
 
 app.get('/login', (req, res) => {
@@ -62,7 +62,7 @@ app.post('/login',async (req, res) => {
     const passwordMatch = bcrypt.compare(req.body.password, user.password);
 
     if (passwordMatch) {
-        res.redirect('/profile');
+        res.render('profile');
     } else {
         res.send('Wrong password');
     }
