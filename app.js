@@ -62,7 +62,7 @@ app.post('/login',async (req, res) => {
     const passwordMatch = bcrypt.compare(req.body.password, user.password);
 
     if (passwordMatch) {
-        res.send('You are logged in');
+        res.redirect('/profile');
     } else {
         res.send('Wrong password');
     }
