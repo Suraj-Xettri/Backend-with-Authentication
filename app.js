@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "./models/userModel.js";
+import Post from "./models/post.js"
 
 // Needed to use `__dirname` with ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -24,7 +25,7 @@ app.get("/", (req, res) => {
 
 app.get('/profile', isLoggedIn, async (req, res) => {
  
-  let user = await User.findOne(req.user.emal)
+  let user = await User.findOne({ email: req.user.email });
   res.render("profile", { user });
 });
 
@@ -101,6 +102,21 @@ function isLoggedIn(req, res, next) {
     res.status(401).send("Invalid token");
   }
 }
+
+
+app.post("/post", isLoggedIn,async (req, res) =>{
+  let user = await User.findOne({ email: req.user.email });
+  let post = await Post.create({
+    author: user._id,
+    content: req.body.content
+  })
+  user.posts.push(post._id)
+  await user.save()
+
+  res.redirect("/profile")
+
+  console.log(post)
+})
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");

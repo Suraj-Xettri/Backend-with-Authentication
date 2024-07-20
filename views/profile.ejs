@@ -29,14 +29,17 @@
         <!-- Main Feed -->
         <div class="w-[80vw]">
           <div class="bg-white p-4 rounded-lg mb-6">
-            <textarea
-              class="w-full p-2 border rounded-lg"
-              rows="3"
-              placeholder="Write something about yourself here..."
-            ></textarea>
-            <button class="bg-blue-500 text-white py-1 px-4 rounded mt-2">
-              Post
-            </button>
+            <form action="/post" method="post">
+              <textarea
+                class="w-full p-2 border rounded-lg"
+                rows="3"
+                name="content"
+                placeholder="Write something about yourself here..."
+              ></textarea>
+              <button type="submit" class="bg-blue-500 text-white py-1 px-4 rounded mt-2">
+                Post
+              </button>
+            </form>
           </div>
         </div>
       </div>
@@ -55,7 +58,6 @@
             <div class="mt-10">
               <a href="" class="text-xl text-zinc-500">Like</a>
             </div>
-            
           </div>
 
           <div class="post w-2/3 p-4 bg-zinc-300 rounded-md border-2">
@@ -68,7 +70,6 @@
             <div class="mt-10">
               <a href="" class="text-xl text-zinc-500">Like</a>
             </div>
-            
           </div>
         </div>
       </div>
