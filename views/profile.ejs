@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="bg-gray-100">
-    <div class="container mx-auto p-4">
+    <div class="container pt-10 mx-auto p-4">
       <!-- Header -->
       <div class="bg-white p-6 rounded-lg mb-6">
         <div class="flex items-center">
@@ -17,16 +17,9 @@
             class="w-24 h-24 rounded-full border-4 border-white -mt-16"
           />
           <div class="ml-4">
-            <h1 class="text-2xl font-semibold">Anime Fan</h1>
-            <p class="text-gray-600">345 followers</p>
-            <div class="flex space-x-2 mt-2">
-              <button class="bg-blue-500 text-white py-1 px-4 rounded">
-                Follow
-              </button>
-              <button class="bg-gray-300 text-gray-700 py-1 px-4 rounded">
-                Chat
-              </button>
-            </div>
+            <h1 class="text-2xl font-semibold"><%= user.name %></h1>
+            <p class="text-gray-600"><%= user.email %></p>
+            <div class="flex space-x-2 mt-2"></div>
           </div>
         </div>
       </div>
@@ -47,6 +40,21 @@
           </div>
         </div>
       </div>
+
+      <div class="posts mb-10">
+        <div class="min-w-[200px] border">
+          <h3 class="3xl">Your Post</h3>
+
+          
+        </div>
+        
+      </div>
+
+      <form action="/logout" method="post">
+        <button type="submit" class="px-4 py-2 bg-red-600 text-white">
+          logout
+        </button>
+      </form>
     </div>
   </body>
 </html>

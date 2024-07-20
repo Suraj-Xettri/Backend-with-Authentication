@@ -22,9 +22,10 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
-app.get('/profile', isLoggedIn, (req, res) => {
-  res.render("profile", { user: req.user });
-  console.log(req.user)
+app.get('/profile', isLoggedIn, async (req, res) => {
+ 
+  let user = await User.findOne(req.user.emal)
+  res.render("profile", { user });
 });
 
 app.post("/register", async (req, res) => {
