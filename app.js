@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
 
 app.get('/profile', isLoggedIn, async (req, res) => {
  
-  let user = await User.findOne({ email: req.user.email });
+  let user = await User.findOne({ email: req.user.email }).populate("posts");
   res.render("profile", { user });
 });
 
@@ -113,9 +113,8 @@ app.post("/post", isLoggedIn,async (req, res) =>{
   user.posts.push(post._id)
   await user.save()
 
-  res.redirect("/profile")
 
-  console.log(post)
+  res.redirect("/profile")
 })
 
 app.listen(3000, () => {
