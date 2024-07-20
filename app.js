@@ -25,8 +25,15 @@ app.use(cookieParser());
 app.get('/', (req, res) => {
     res.render('index');
 });
-app.post('/register',  (req, res) => {
+
+
+app.post('/register',  async (req, res) => {
     const { name, age, email, password } = req.body;
+
+    let user =  await User.findOne({email});
+
+    if(user) return res.status(500).send("User already exits")
+
     bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(password, salt, async (err, hash) => {
             const newUser = await User.create({
@@ -38,11 +45,13 @@ app.post('/register',  (req, res) => {
 
             let token = jwt.sign({email}, "token")
             res.cookie("token", token)
-            res.redirect('/');
+            res.redirect('/profile');
             console.log(token)
         }) 
     })
 });
+
+
 
 app.post('/logout', (req, res) => {
     res.cookie("token","")
@@ -54,17 +63,28 @@ app.get('/login', (req, res) => {
 })
 
 app.post('/login',async (req, res) => {
-   let user = await User.findOne({email: req.body.email})
-   if(!user) res.send("Wrong Email")
+     let {email, password} = req.body
 
-    const passwordMatch = bcrypt.compare(req.body.password, user.password);
+   let user = await User.findOne({email})
+   if(!user) res.redirect("./login")
+
+    const passwordMatch = bcrypt.compare(password, user.password);
 
     if (passwordMatch) {
-        res.render('profile', {user: user});
+        let token = jwt.sign({email}, "token")
+        res.cookie("token", token)
+        res.render('profile', {user});
     } else {
-        res.send('Wrong password');
+        res.redirect('/login');
     }
-})
+}) 
+
+
+function isLoggedIn(req, res, next){
+    if(req.cookie.token){
+        
+    }
+}
 
 
 app.listen(3000);
