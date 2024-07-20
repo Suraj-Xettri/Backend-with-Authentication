@@ -3,27 +3,48 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>User Profile</title>
-    <!-- Include Tailwind CSS -->
+    <title>Profile Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
+  <body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+      <!-- Header -->
+      <div class="bg-white p-6 rounded-lg mb-6">
+        <div class="flex items-center">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/694px-Unknown_person.jpg"
+            alt="Profile Picture"
+            class="w-24 h-24 rounded-full border-4 border-white -mt-16"
+          />
+          <div class="ml-4">
+            <h1 class="text-2xl font-semibold">Anime Fan</h1>
+            <p class="text-gray-600">345 followers</p>
+            <div class="flex space-x-2 mt-2">
+              <button class="bg-blue-500 text-white py-1 px-4 rounded">
+                Follow
+              </button>
+              <button class="bg-gray-300 text-gray-700 py-1 px-4 rounded">
+                Chat
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-  <body class="bg-gray-100 h-screen flex items-center justify-center">
-    <div class="max-w-md w-full bg-white p-8 rounded shadow-lg">
-      <div class="flex flex-col items-center justify-center">
-        <h2 class="text-2xl font-semibold text-gray-800 mt-4"><%= user.name %></h2>
-        <p class="text-sm text-gray-600 mt-2"><%= user.email %></p>
-        <div class="pt-5 flex justify-between gap-5">
-          <button class="bg-blue-500 px-3 py-2  hover:bg-blue-600 text-white rounded-md">
-            <a
-            href="#"
-            class=""
-            >Edit Profile</a
-          >
-          </button>
-          <form  action="./logout" method="post">
-            <button class="px-3 py-2 bg-red-500 ">Log Out</button>
-            </form>
+      <!-- Main Content -->
+      <div class="flex">
+        <!-- Main Feed -->
+        <div class="w-[80vw]">
+          <div class="bg-white p-4 rounded-lg mb-6">
+            <textarea
+              class="w-full p-2 border rounded-lg"
+              rows="3"
+              placeholder="Write something about yourself here..."
+            ></textarea>
+            <button class="bg-blue-500 text-white py-1 px-4 rounded mt-2">
+              Post
+            </button>
+          </div>
         </div>
       </div>
     </div>

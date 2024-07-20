@@ -24,6 +24,7 @@ app.get("/", (req, res) => {
 
 app.get('/profile', isLoggedIn, (req, res) => {
   res.render("profile", { user: req.user });
+  console.log(req.user)
 });
 
 app.post("/register", async (req, res) => {
@@ -69,11 +70,11 @@ app.post("/login", async (req, res) => {
     let user = await User.findOne({ email });
     if (!user) return res.redirect("/login");
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    const passwordMatch = bcrypt.compare(password, user.password);
 
     if (passwordMatch) {
       const token = jwt.sign({ email }, "secret", { expiresIn: "1h" });
-      res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+      res.cookie("token", token);
 
       res.redirect("/profile");
     } else {
