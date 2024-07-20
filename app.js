@@ -1,13 +1,10 @@
-import cookieParser from 'cookie-parser';
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken'
-
-import User from './models/userModel.js';
-
-
+import cookieParser from "cookie-parser";
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import User from "./models/userModel.js";
 
 // Needed to use `__dirname` with ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -15,76 +12,94 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
 
-app.get('/', (req, res) => {
-    res.render('index');
+app.get("/", (req, res) => {
+  res.render("index");
 });
 
-
-app.post('/register',  async (req, res) => {
-    const { name, age, email, password } = req.body;
-
-    let user =  await User.findOne({email});
-
-    if(user) return res.status(500).send("User already exits")
-
-    bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(password, salt, async (err, hash) => {
-            const newUser = await User.create({
-                name,
-                age,
-                email,
-                password: hash
-            });
-
-            let token = jwt.sign({email}, "token")
-            res.cookie("token", token)
-            res.redirect('/profile');
-            console.log(token)
-        }) 
-    })
+app.get('/profile', isLoggedIn, (req, res) => {
+  res.render("profile", { user: req.user });
 });
 
+app.post("/register", async (req, res) => {
+  const { name, age, email, password } = req.body;
 
+  try {
+    let user = await User.findOne({ email });
+    if (user) return res.status(500).send("User already exists");
 
-app.post('/logout', (req, res) => {
-    res.cookie("token","")
-    res.redirect('/login');
-})
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
 
-app.get('/login', (req, res) => {
-    res.render('login')
-})
+    const newUser = await User.create({
+      name,
+      age,
+      email,
+      password: hash,
+    });
 
-app.post('/login',async (req, res) => {
-     let {email, password} = req.body
+    const token = jwt.sign({ email }, "secret", { expiresIn: "1h" });
+    res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
 
-   let user = await User.findOne({email})
-   if(!user) res.redirect("./login")
+    res.redirect("/profile");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+});
 
-    const passwordMatch = bcrypt.compare(password, user.password);
+app.post("/logout", (req, res) => {
+  res.cookie("token", "", { maxAge: 0 });
+  res.redirect("/login");
+});
+
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    let user = await User.findOne({ email });
+    if (!user) return res.redirect("/login");
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (passwordMatch) {
-        let token = jwt.sign({email}, "token")
-        res.cookie("token", token)
-        res.render('profile', {user});
+      const token = jwt.sign({ email }, "secret", { expiresIn: "1h" });
+      res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+
+      res.redirect("/profile");
     } else {
-        res.redirect('/login');
+      res.redirect("/login");
     }
-}) 
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+});
 
+function isLoggedIn(req, res, next) {
+  if (!req.cookies.token) {
+    return res.status(401).send("You must be logged in first");
+  }
 
-function isLoggedIn(req, res, next){
-    if(req.cookie.token){
-        
-    }
+  try {
+    const data = jwt.verify(req.cookies.token, "secret");
+    req.user = data;
+    next();
+  } catch (error) {
+    console.error("Token verification failed:", error);
+    res.status(401).send("Invalid token");
+  }
 }
 
-
-app.listen(3000);
+app.listen(3000, () => {
+  console.log("Server is running on port 3000");
+});
