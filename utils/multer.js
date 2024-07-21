@@ -8,8 +8,14 @@ const storage = multer.diskStorage({
         cb(null, './public/images')
     },
     filename: function(req, file, cb){
-        crypto.randomBytes.toString(12, (err, data)=>{
-            cb(null, file.fieldname + "-"+ )
+        crypto.randomBytes(12, (err, name)=>{
+            const fn = name.toString("hex")+path.extname(file.originalname)
+            cb(null, fn)
         })
     }
 })
+
+const upload = multer({ storage: storage})
+
+export default upload;
+
