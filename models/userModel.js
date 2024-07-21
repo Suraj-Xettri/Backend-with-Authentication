@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
     },
+    image:{
+        type: String,
+        default: "unknown.jpg"
+    },
     posts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post'
