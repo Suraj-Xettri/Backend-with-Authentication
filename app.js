@@ -5,7 +5,8 @@ import { fileURLToPath } from "url";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "./models/userModel.js";
-import Post from "./models/post.js"
+import Post from "./models/post.js";
+import upload from "./utils/multer.js";
 
 // Needed to use `__dirname` with ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -23,13 +24,12 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
-app.get('/profile', isLoggedIn, async (req, res) => {
- 
+app.get("/profile", isLoggedIn, async (req, res) => {
   let user = await User.findOne({ email: req.user.email }).populate("posts");
   res.render("profile", { user });
 });
 
-app.post("/register", async (req, res) => {
+app.post("/register", upload.single("file"), async (req, res) => {
   const { name, age, email, password } = req.body;
   const file = req.file;
 
@@ -45,11 +45,14 @@ app.post("/register", async (req, res) => {
       age,
       email,
       password: hash,
-      image: file.path
+      image: file ? file.path : null,
     });
 
     const token = jwt.sign({ email }, "secret", { expiresIn: "1h" });
-    res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
 
     res.redirect("/profile");
   } catch (error) {
@@ -105,19 +108,17 @@ function isLoggedIn(req, res, next) {
   }
 }
 
-
-app.post("/post", isLoggedIn,async (req, res) =>{
+app.post("/post", isLoggedIn, async (req, res) => {
   let user = await User.findOne({ email: req.user.email });
   let post = await Post.create({
     author: user._id,
-    content: req.body.content
-  })
-  user.posts.push(post._id)
-  await user.save()
+    content: req.body.content,
+  });
+  user.posts.push(post._id);
+  await user.save();
 
-
-  res.redirect("/profile")
-})
+  res.redirect("/profile");
+});
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
