@@ -31,6 +31,7 @@ app.get('/profile', isLoggedIn, async (req, res) => {
 
 app.post("/register", async (req, res) => {
   const { name, age, email, password } = req.body;
+  const file = req.file;
 
   try {
     let user = await User.findOne({ email });
@@ -44,6 +45,7 @@ app.post("/register", async (req, res) => {
       age,
       email,
       password: hash,
+      image: file.path
     });
 
     const token = jwt.sign({ email }, "secret", { expiresIn: "1h" });
