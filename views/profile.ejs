@@ -59,11 +59,11 @@
             <div class="mt-10">
               <p><%= post.like.length %></p>
               <% if (post.like.includes(user._id)) { %>
-              <a href="/dislike/<%= post._id %>" class="text-xl text-zinc-500"
+              <a href="/dislike/<%= post._id %>" class="text-xl  px-2 rounded-md mt-2 text-center bg-zinc-500 text-zinc-100"
                 >Dislike</a
               >
               <% } else { %>
-              <a href="/like/<%= post._id %>" class="text-xl text-zinc-500"
+              <a href="/like/<%= post._id %>" class="text-xl px-2 rounded-md text-center bg-red-500 text-zinc-700"
                 >Like</a
               >
               <% } %>
