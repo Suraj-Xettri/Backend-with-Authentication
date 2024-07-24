@@ -90,18 +90,17 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get('/like/:userID', isLoggedIn, async (req, res) => {
-  const userID = req.params.userID
-  let post = await Post.findOne({ author:userID });
 
- 
-  if (!post.like.includes(userID)){
-    post.like.push(userID)
+app.get('/like/:postID', isLoggedIn, async (req, res) => {
+  const user = await User.findOne({email: req.user.email})
+  let post = await Post.findOne({ _id:req.params.postID });
+  if (!post.like.includes(user._id)){
+    post.like.push(user._id)
     await post.save();
-    console.log(post) 
+    console.log(post)  
   }
   res.redirect('/profile')
-})
+}) 
 
 function isLoggedIn(req, res, next) {
   if (!req.cookies.token) {
