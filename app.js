@@ -90,6 +90,18 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.get('/like/:userID', isLoggedIn, async (req, res) => {
+  const userID = req.params.userID
+  let post = await Post.findOne({ author:userID });
+
+  post.like.push(userID)
+  await post.save();
+
+  console.log(post)
+  res.redirect('/profile')
+
+})
+
 function isLoggedIn(req, res, next) {
   if (!req.cookies.token) {
     return res.status(401).send("You must be logged in first");

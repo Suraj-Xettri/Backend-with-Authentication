@@ -56,7 +56,8 @@
               </p>
   
               <div class="mt-10">
-                <a href="" class="text-xl text-zinc-500">Like</a>
+                <p> <%= post.like.length %> </p>
+                <a href="/like/<%= user._id %>" class="text-xl text-zinc-500">Like</a>
               </div>
             </div>
          <% }) %>
