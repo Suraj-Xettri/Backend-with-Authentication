@@ -6,7 +6,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "./models/userModel.js";
 import Post from "./models/post.js";
-import upload from "./utils/multer.js";
 
 // Needed to use `__dirname` with ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -29,9 +28,8 @@ app.get("/profile", isLoggedIn, async (req, res) => {
   res.render("profile", { user });
 });
 
-app.post("/register", upload.single("file"), async (req, res) => {
+app.post("/register", async (req, res) => {
   const { name, age, email, password } = req.body;
-  const file = req.file;
 
   try {
     let user = await User.findOne({ email });
@@ -45,7 +43,6 @@ app.post("/register", upload.single("file"), async (req, res) => {
       age,
       email,
       password: hash,
-      image: file ? file.path : null,
     });
 
     const token = jwt.sign({ email }, "secret", { expiresIn: "1h" });
