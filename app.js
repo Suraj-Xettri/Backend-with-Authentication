@@ -51,7 +51,7 @@ app.post("/register", async (req, res) => {
       secure: process.env.NODE_ENV === "production",
     });
 
-    res.redirect("/profile");
+    res.redirect("/home");
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");
@@ -80,7 +80,7 @@ app.post("/login", async (req, res) => {
       const token = jwt.sign({ email }, "secret", { expiresIn: "1h" });
       res.cookie("token", token);
 
-      res.redirect("/profile");
+      res.redirect("/home");
     } else {
       res.redirect("/login");
     }
