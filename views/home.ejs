@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body class="bg-gray-100">
+
+  <div class="container p-5">
+    <div class="flex justify-between ">
+        <h1 class="text-3xl font-bold mb-5">All Posts</h1>
+
+        
+           <a href="/profile">Profile</a> 
+        
+    </div>
+    
+    <div class="post-container flex flex-col gap-5">
+      <% posts.forEach((post) => { %>
+        <div class="post w-full md:w-2/3 p-4 bg-white rounded-md shadow-md border border-gray-300">
+          <h4 class="text-blue-500 mb-2"><%= post.author.name %></h4>
+          <p class="text-sm tracking-tight">
+            <%= post.content %>
+          </p>
+          <div class="mt-10">
+            <p> <%= post.like.length %> Likes </p>
+            <% if (post.like.includes(user._id)) { %>
+              <a href="/dislike/<%= post._id %>?from=home" class="text-xl text-red-500">Dislike</a>
+            <% } else { %>
+              <a href="/like/<%= post._id %>? from=home" class="text-xl text-blue-500">Like</a>
+            <% } %>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+
+</body>
+</html>

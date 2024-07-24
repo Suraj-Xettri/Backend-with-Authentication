@@ -21,6 +21,10 @@
             <p class="text-gray-600"><%= user.email %></p>
             <div class="flex space-x-2 mt-2"></div>
           </div>
+
+          <a href="/home" class="ml-4 px-4 py-2 bg-red-600 text-white">
+            Home
+          </a>
         </div>
       </div>
 
@@ -59,11 +63,11 @@
             <div class="mt-10">
               <p><%= post.like.length %></p>
               <% if (post.like.includes(user._id)) { %>
-              <a href="/dislike/<%= post._id %>" class="text-xl  px-2 rounded-md mt-2 text-center bg-zinc-500 text-zinc-100"
+              <a href="/dislike/<%= post._id %>?from=profile" class="text-xl  px-2 rounded-md mt-2 text-center bg-zinc-500 text-zinc-100"
                 >Dislike</a
               >
               <% } else { %>
-              <a href="/like/<%= post._id %>" class="text-xl px-2 rounded-md text-center bg-red-500 text-zinc-700"
+              <a href="/like/<%= post._id %>?from=profile" class="text-xl px-2 rounded-md text-center bg-red-500 text-zinc-700"
                 >Like</a
               >
               <% } %>

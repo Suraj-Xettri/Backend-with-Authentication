@@ -92,6 +92,7 @@ app.post("/login", async (req, res) => {
 
 
 app.get('/like/:postID', isLoggedIn, async (req, res) => {
+  const redirectPage = req.query.from || 'home';
   const user = await User.findOne({email: req.user.email})
   let post = await Post.findOne({ _id:req.params.postID });
   if (!post.like.includes(user._id)){
@@ -99,10 +100,13 @@ app.get('/like/:postID', isLoggedIn, async (req, res) => {
     await post.save();
     console.log(post)  
   }
-  res.redirect('/profile')
+  res.redirect(`/${redirectPage}`)
 }) 
 
+
 app.get('/dislike/:postID', isLoggedIn, async (req, res) => {
+  const redirectPage = req.query.from || 'home';
+
   const user = await User.findOne({email: req.user.email})
   let post = await Post.findOne({ _id:req.params.postID });
   if (post.like.includes(user._id)){
@@ -110,7 +114,7 @@ app.get('/dislike/:postID', isLoggedIn, async (req, res) => {
     await post.save();
     console.log(post)  
   }
-  res.redirect('/profile')
+  res.redirect(`/${redirectPage}`)
 }) 
 
 
@@ -144,3 +148,15 @@ app.post("/post", isLoggedIn, async (req, res) => {
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
+
+app.get('/home', isLoggedIn, async (req, res) => {
+  try {
+    let user = await User.findOne({ email: req.user.email });
+    const posts = await Post.find().populate("author");
+    res.render("home", { posts, user });  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal server error');
+  }
+});
+
+ 
