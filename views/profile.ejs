@@ -36,7 +36,10 @@
                 name="content"
                 placeholder="Write something about yourself here..."
               ></textarea>
-              <button type="submit" class="bg-blue-500 text-white py-1 px-4 rounded mt-2">
+              <button
+                type="submit"
+                class="bg-blue-500 text-white py-1 px-4 rounded mt-2"
+              >
                 Post
               </button>
             </form>
@@ -49,19 +52,24 @@
 
         <div class="post-container mt-5 flex flex-col gap-5">
           <% user.posts.forEach((post) => { %>
-            <div class="post w-2/3 p-4 bg-zinc-300 rounded-md border-2">
-              <h4 class="text-blue-500 mb-2"><%=  user.name %></h4>
-              <p class="text-sm tracking-tighte">
-                <%= post.content %>
-              </p>
-  
-              <div class="mt-10">
-                <p> <%= post.like.length %> </p>
-                <a href="/like/<%= post._id%>" class="text-xl text-zinc-500">Like</a>
-              </div>
+          <div class="post w-2/3 p-4 bg-zinc-300 rounded-md border-2">
+            <h4 class="text-blue-500 mb-2"><%= user.name %></h4>
+            <p class="text-sm tracking-tighte"><%= post.content %></p>
+
+            <div class="mt-10">
+              <p><%= post.like.length %></p>
+              <% if (post.like.includes(user._id)) { %>
+              <a href="/dislike/<%= post._id %>" class="text-xl text-zinc-500"
+                >Dislike</a
+              >
+              <% } else { %>
+              <a href="/like/<%= post._id %>" class="text-xl text-zinc-500"
+                >Like</a
+              >
+              <% } %>
             </div>
-         <% }) %>
-          
+          </div>
+          <% }) %>
         </div>
       </div>
 

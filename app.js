@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
 
-app.get("/", (req, res) => {
+app.get("/register", (req, res) => {
   res.render("index");
 });
 
@@ -101,6 +101,18 @@ app.get('/like/:postID', isLoggedIn, async (req, res) => {
   }
   res.redirect('/profile')
 }) 
+
+app.get('/dislike/:postID', isLoggedIn, async (req, res) => {
+  const user = await User.findOne({email: req.user.email})
+  let post = await Post.findOne({ _id:req.params.postID });
+  if (post.like.includes(user._id)){
+    post.like.pull(user._id)
+    await post.save();
+    console.log(post)  
+  }
+  res.redirect('/profile')
+}) 
+
 
 function isLoggedIn(req, res, next) {
   if (!req.cookies.token) {
