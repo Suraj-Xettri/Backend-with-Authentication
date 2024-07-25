@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "./models/userModel.js";
 import Post from "./models/post.js";
+import upload from "./utils/multer.js";
 
 // Needed to use `__dirname` with ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -28,11 +29,12 @@ app.get("/profile", isLoggedIn, async (req, res) => {
   res.render("profile", { user });
 });
 
-app.post("/register", async (req, res) => {
+app.post("/register", upload.single('image'),async (req, res) => {
   const { name, age, email, password } = req.body;
 
   try {
     let user = await User.findOne({ email });
+
     if (user) return res.status(500).send("User already exists");
 
     const salt = await bcrypt.genSalt(10);
@@ -43,6 +45,7 @@ app.post("/register", async (req, res) => {
       age,
       email,
       password: hash,
+      image: req.file.fieldname
     });
 
     const token = jwt.sign({ email }, "secret", { expiresIn: "1h" });
@@ -67,6 +70,8 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
+
+
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -90,37 +95,34 @@ app.post("/login", async (req, res) => {
   }
 });
 
-
-app.get('/like/:postID', isLoggedIn, async (req, res) => {
-  const redirectPage = req.query.from || 'home';
-  const user = await User.findOne({email: req.user.email})
-  let post = await Post.findOne({ _id:req.params.postID });
-  if (!post.like.includes(user._id)){
-    post.like.push(user._id)
+app.get("/like/:postID", isLoggedIn, async (req, res) => {
+  const redirectPage = req.query.from || "home";
+  const user = await User.findOne({ email: req.user.email });
+  let post = await Post.findOne({ _id: req.params.postID });
+  if (!post.like.includes(user._id)) {
+    post.like.push(user._id);
     await post.save();
-    console.log(post)  
+    console.log(post);
   }
-  res.redirect(`/${redirectPage}`)
-}) 
+  res.redirect(`/${redirectPage}`);
+});
 
+app.get("/dislike/:postID", isLoggedIn, async (req, res) => {
+  const redirectPage = req.query.from || "home";
 
-app.get('/dislike/:postID', isLoggedIn, async (req, res) => {
-  const redirectPage = req.query.from || 'home';
-
-  const user = await User.findOne({email: req.user.email})
-  let post = await Post.findOne({ _id:req.params.postID });
-  if (post.like.includes(user._id)){
-    post.like.pull(user._id)
+  const user = await User.findOne({ email: req.user.email });
+  let post = await Post.findOne({ _id: req.params.postID });
+  if (post.like.includes(user._id)) {
+    post.like.pull(user._id);
     await post.save();
-    console.log(post)  
+    console.log(post);
   }
-  res.redirect(`/${redirectPage}`)
-}) 
-
+  res.redirect(`/${redirectPage}`);
+});
 
 function isLoggedIn(req, res, next) {
   if (!req.cookies.token) {
-    return res.status(401).send("You must be logged in first");
+    return res.redirect("/login");
   }
 
   try {
@@ -149,14 +151,8 @@ app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
 
-app.get('/home', isLoggedIn, async (req, res) => {
-  try {
-    let user = await User.findOne({ email: req.user.email });
-    const posts = await Post.find().populate("author");
-    res.render("home", { posts, user });  } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal server error');
-  }
+app.get("/home", isLoggedIn, async (req, res) => {
+  let user = await User.findOne({ email: req.user.email });
+  const posts = await Post.find().populate("author");
+  res.render("home", { posts, user });
 });
-
- 

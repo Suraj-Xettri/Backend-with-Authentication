@@ -5,7 +5,7 @@ import crypto from 'crypto'
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb){
-        cb(null, './images')
+        cb(null, './public/images')
     },
     filename: function(req, file, cb){
         crypto.randomBytes(12, (err, name)=>{
