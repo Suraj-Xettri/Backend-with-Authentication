@@ -45,7 +45,7 @@ app.post("/register", upload.single('image'),async (req, res) => {
       age,
       email,
       password: hash,
-      image: req.file.fieldname
+      image: req.file.filename
     });
 
     const token = jwt.sign({ email }, "secret", { expiresIn: "1h" });
